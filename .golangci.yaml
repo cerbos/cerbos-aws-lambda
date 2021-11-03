@@ -1,0 +1,117 @@
+---
+run:
+  timeout: 300s
+  skip-dirs:
+    - .cerbos
+  build-tags:
+    - tests
+
+linters-settings:
+  exhaustive:
+    default-signifies-exhaustive: true
+
+  gci:
+    local-prefixes: github.com/cerbos/cerbos-aws-lambda
+
+  gofumpt:
+    extra-rules: true
+
+  goheader:
+    values:
+      const:
+        COMPANY: Zenauth Ltd.
+    template: |-
+      Copyright {{ YEAR-RANGE }} {{ COMPANY }}
+      SPDX-License-Identifier: Apache-2.0
+
+  nolintlint:
+    allow-unused: false
+    allow-leading-space: false
+    require-specific: true
+
+  tagliatelle:
+    case:
+      rules:
+        json: goCamel
+        yaml: goCamel
+        xml: goCamel
+        bson: goCamel
+
+linters:
+  enable:
+    - asciicheck
+    - bodyclose
+    - dupl
+    - durationcheck
+    - errorlint
+    - exhaustive
+    - exportloopref
+    - forbidigo
+    - forcetypeassert
+    - gci
+    - goconst
+    - gocritic
+    - godot
+    - gofumpt
+    - goimports
+    - goheader
+    - gomnd
+    - gosec
+    - ifshort
+    - importas
+    - makezero
+    - misspell
+    - nakedret
+    - nestif
+    - nilerr
+    - noctx
+    - nolintlint
+    - prealloc
+    - predeclared
+    - promlinter
+    - revive
+    - rowserrcheck
+    - sqlclosecheck
+    - tagliatelle
+    - thelper
+    - tparallel
+    - unconvert
+    - unparam
+    - whitespace
+  disable:
+    - cyclop
+    - depguard
+    - dogsled
+    - exhaustivestruct
+    - funlen
+    - gochecknoglobals
+    - gochecknoinits
+    - gocognit
+    - gocyclo
+    - godox
+    - goerr113
+    - gofmt
+    - golint
+    - gomodguard
+    - goprintffuncname
+    - interfacer
+    - lll
+    - maligned
+    - nlreturn
+    - paralleltest
+    - stylecheck
+    - testpackage
+    - wastedassign
+    - wrapcheck
+    - wsl
+
+issues:
+  max-same-issues: 30
+
+  fix: true
+
+  exclude-rules:
+    - path: _test\.go
+      linters:
+        - goconst
+        - gomnd

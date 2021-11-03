@@ -1,0 +1,16 @@
+---
+server:
+  httpListenAddr: ":3592"
+  grpcListenAddr: ":3593"
+
+storage:
+  driver: "disk"
+  disk:
+    directory: store
+
+auxData:
+  jwt:
+    keySets:
+      - id: cerbos
+        local: # Load from a local file
+          file: verify_key.jwk
