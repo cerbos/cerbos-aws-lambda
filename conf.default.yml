@@ -1,4 +1,5 @@
 ---
+# TODO: remove server settings from the config file, need to be set via command line
 server:
   httpListenAddr: ":3592"
   grpcListenAddr: ":3593"
