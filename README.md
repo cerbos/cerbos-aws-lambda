@@ -1,5 +1,5 @@
-Cerbos AWS Lambda Gateway
-=========================
+Cerbos AWS Lambda Docker Image
+==============================
 Gateway service implements AWS Lambda runtime and invokes Cerbos server API hosted in the same AWS Lambda instance.
 
 Cerbos is the open core, language-agnostic, scalable authorization solution that makes user permissions and authorization simple to implement and manage by writing context-aware access control policies for your application resources.
