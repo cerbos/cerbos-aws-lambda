@@ -3,7 +3,10 @@ Gateway service implements AWS Lambda runtime and invokes Cerbos server API host
 
 ## Description
 This project builds a docker image that can be used to run a Cerbos server in AWS Lambda. The images will contain the gateway executable and the Cerbos binary.
-You can use it in a Unix-like system with x86_64 or arm64 architectures. There's also an example of AWS Lambda function based on this image. The function is built using [AWS SAM](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/what-is-sam.html) model.
+
+The following commands assume you run a Unix-like system with x86_64 or arm64 architectures.
+
+There's also an example of AWS Lambda function based on this image. The function is built using [AWS SAM](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/what-is-sam.html) model.
 
 ### Prerequisites
 
