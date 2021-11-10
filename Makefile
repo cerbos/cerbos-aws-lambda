@@ -10,7 +10,7 @@ clean:
 
 .PHONY: cerbos-binary
 cerbos-binary:
-	@ CURRENT_RELEASE=$${CERBOS_CURRENT_RELEASE:-$$(curl -sH "Accept: application/vnd.github.v3+json"  https://api.github.com/repos/cerbos/cerbos/tags | grep -o '"name": "v\d\.\d.\d"' | cut -f 2 -d ':' | tr -d ' "v' | head -1)}; \
+	@ CURRENT_RELEASE=$${CERBOS_RELEASE:-$$(curl -sH "Accept: application/vnd.github.v3+json"  https://api.github.com/repos/cerbos/cerbos/tags | grep -o '"name": "v\d\.\d.\d"' | cut -f 2 -d ':' | tr -d ' "v' | head -1)}; \
  	CURRENT_RELEASE=$${CURRENT_RELEASE#v}; \
  	echo "Building cerbos binary for version $${CURRENT_RELEASE}"; \
 	for os in Linux Darwin; do \
