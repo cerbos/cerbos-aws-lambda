@@ -11,7 +11,7 @@ RUN go build -ldflags '-s -w' -o /gw main.go
 RUN chmod +x /gw
 
 # Now copy it into our base image.
-FROM gcr.io/distroless/base:debug
+FROM gcr.io/distroless/base
 ARG ARCH=amd64
 COPY --from=build /gw /
 COPY .cerbos/Linux_${ARCH}/cerbos /
