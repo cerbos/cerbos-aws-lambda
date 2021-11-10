@@ -10,7 +10,7 @@ You can use it in a Unix-like system with x86_64 or arm64 architectures. There's
 The following tools are required:
 - Make - build automation tool
 - AWS CLI
-- AWS SAM CLI - if you wish to use the provided AWS Lambda function template.
+- AWS SAM CLI - if you wish to use the provided AWS Lambda function template
 - Docker
 
 ### Build the Docker image
