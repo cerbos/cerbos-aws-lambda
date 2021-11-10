@@ -42,11 +42,11 @@ Outputs:
   # Find out more about other implicit resources you can reference within SAM
   # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
   CerbosServerFunctionAPI:
-    Description: "API Gateway endpoint URL for Prod environment for First Function"
+    Description: "API Gateway endpoint URL"
     Value: !Sub "https://${ServerlessHttpApi}.execute-api.${AWS::Region}.amazonaws.com"
   CerbosServerFunction:
     Description: "Cerbos Server Function ARN"
     Value: !GetAtt CerbosServerFunction.Arn
   HelloWorldFunctionIamRole:
-    Description: "IAM Role created for Cerbos Server function"
+    Description: "IAM Role created for the Cerbos Server function"
     Value: !GetAtt CerbosServerFunctionRole.Arn

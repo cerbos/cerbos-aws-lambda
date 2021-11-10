@@ -15,7 +15,9 @@ The following tools are required:
 
 ### Build the docker image
 
-Run the following command to build the docker image 'cerbos/aws-lambda-gateway' :
+Check out `conf.default.yml` for Cerbos configuration. The default configuration uses blob storage, e.g. AWS S3 bucket. Cerbos config can read from environment variables. If you choose to do so, your AWS Lambda have to expose them.
+
+Run the following command to build the docker image 'cerbos/aws-lambda-gateway':
 ```shell
 make image
 ```
@@ -40,3 +42,16 @@ Now you can publish the image with the following command:
 ```shell
 make publish-image
 ```
+
+### Create AWS Lambda function
+You can create AWS Lambda function referencing the published image with any tool. Alternatively you can use the provided template `sam.yml`. For latter option please replace <repositoryUri> with the value you saved in the previous step. The template exposes these environment variables.
+- BUCKET_URL - the URL of the S3 bucket where Cerbos policies are stored.
+- BUCKET_PREFIX - optional prefix for the S3 bucket.
+- CERBOS_LOGGING_LEVEL - Cerbos logging level, defaults to INFO.
+
+To publish the function run the following command:
+```shell
+make publish-lambda
+```
+
+The command will create an AWS Lambda function as part of the stack called `$CERBOS_STACK_NAME` (if unsetted, defaults to `Cerbos`). The stack will also create an API Gateway resources and IAM role for the function. Make sure the role has the necessary permissions to access the S3 bucket (or other policy storage you might use).

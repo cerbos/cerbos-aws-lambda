@@ -31,20 +31,24 @@ image: cerbos-binary
 	@ arch=$$(uname -m); [ "$$arch" != "x86_64" ] && [ "$$arch" != "arm64" ] && { echo "$${arch} - unsupported architecture, supported: x86_64, arm64"; exit 1; }; \
 	docker build --build-arg ARCH=$$arch -t cerbos/aws-lambda-gateway .
 
+.PHONY: ecr
+ecr:
+	@ [ -n "$$ECR_REPOSITORY_URL" ] || { echo "Please set ECR_REPOSITORY_URL environment variable"; exit 1; }
+
 .PHONY: publish-image
-publish-image: image
+publish-image: image ecr
 	docker tag  cerbos/aws-lambda-gateway:latest $${ECR_REPOSITORY_URL}:latest
 	docker push $${ECR_REPOSITORY_URL}:latest
 
 .PHONY: publish-lambda
-publish-lambda:
+publish-lambda: ecr
 	@ arch=$$(uname -m); [ "$$arch" != "x86_64" ] && [ "$$arch" != "arm64" ] && { echo "$${arch} - unsupported architecture, supported: x86_64, arm64"; exit 1; }; \
 	sam deploy --template sam.yml --stack-name $${CERBOS_STACK_NAME:-Cerbos} \
 --resolve-image-repos --capabilities CAPABILITY_IAM --no-confirm-changeset  --no-fail-on-empty-changeset --parameter-overrides \
 ArchitectureParameter=$$arch EcrRepositoryURLParameter=$$ECR_REPOSITORY_URL
 
 .PHONY: update-lambda
-update-lambda:
+update-lambda: ecr
 	fn=$$(aws cloudformation list-stack-resources --stack-name $${CERBOS_STACK_NAME:-Cerbos} --query "StackResourceSummaries[?ResourceType=='AWS::Lambda::Function'].PhysicalResourceId" --output text); \
 	aws lambda update-function-code --function-name $$fn --image-uri $${ECR_REPOSITORY_URL}:latest > /dev/null; \
 	aws lambda wait function-updated --function-name $$fn
