@@ -13,7 +13,7 @@ clean:
 	@ rm -rf .cerbos
 
 .PHONY: cerbos-binary
-cerbos-binary: # TODO: download latest release from github.com/cerbos/cerbos
+cerbos-binary:
 	@ for os in Linux Darwin; do \
    		for arch in arm64 amd64; do \
    			a=$$arch; \
