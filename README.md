@@ -15,7 +15,7 @@ The following tools are required:
 
 ### Build the Docker image
 
-Check out `conf.default.yml` for Cerbos configuration. The default configuration uses blob storage, e.g. AWS S3 bucket. Cerbos config can read from environment variables. If you choose to do so, your AWS Lambda have to expose them.
+Check out `conf.default.yml` for Cerbos configuration. The default configuration uses blob storage, e.g. AWS S3 bucket. Cerbos config can read from environment variables. If you choose to do so, your AWS Lambda has to expose them.
 
 Run the following command to build the docker image 'cerbos/aws-lambda-gateway':
 ```shell
