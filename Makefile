@@ -1,7 +1,3 @@
-
-# TODO: find out how to get this from GitHub
-CURRENT_RELEASE=0.9.1
-
 .PHONY: all
 all: clean build
 
@@ -14,7 +10,10 @@ clean:
 
 .PHONY: cerbos-binary
 cerbos-binary:
-	@ for os in Linux Darwin; do \
+	@ CURRENT_RELEASE=$${CERBOS_CURRENT_RELEASE:-$$(curl -sH "Accept: application/vnd.github.v3+json"  https://api.github.com/repos/cerbos/cerbos/tags | grep -o '"name": "v\d\.\d.\d"' | cut -f 2 -d ':' | tr -d ' "v' | head -1)}; \
+ 	CURRENT_RELEASE=$${CURRENT_RELEASE#v}; \
+ 	echo "Building cerbos binary for version $${CURRENT_RELEASE}"; \
+	for os in Linux Darwin; do \
    		for arch in arm64 amd64; do \
    			a=$$arch; \
    			if [ "$$a" = "amd64" ]; then \
@@ -43,9 +42,8 @@ publish-image: image ecr
 .PHONY: publish-lambda
 publish-lambda: ecr
 	@ arch=$$(uname -m); [ "$$arch" != "x86_64" ] && [ "$$arch" != "arm64" ] && { echo "$${arch} - unsupported architecture, supported: x86_64, arm64"; exit 1; }; \
-	sam deploy --template sam.yml --stack-name $${CERBOS_STACK_NAME:-Cerbos} \
---resolve-image-repos --capabilities CAPABILITY_IAM --no-confirm-changeset  --no-fail-on-empty-changeset --parameter-overrides \
-ArchitectureParameter=$$arch EcrRepositoryURLParameter=$$ECR_REPOSITORY_URL
+	sam deploy --template sam.yml --stack-name $${CERBOS_STACK_NAME:-Cerbos} --resolve-image-repos \
+	 --capabilities CAPABILITY_IAM --no-confirm-changeset  --no-fail-on-empty-changeset --parameter-overrides ArchitectureParameter=$$arch
 
 .PHONY: update-lambda
 update-lambda: ecr

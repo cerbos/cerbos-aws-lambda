@@ -12,7 +12,11 @@ import (
 	"time"
 )
 
-const healthCheckInterval = time.Millisecond * 15
+const (
+	healthCheckInterval = time.Millisecond * 15
+	httpListenAddr      = ":3592"
+	grpcListenAddr      = ":3593"
+)
 
 type launcher struct {
 	httpClient     *http.Client
@@ -35,7 +39,8 @@ func (l *launcher) StartProcess(ctx context.Context, cerbos, workDir, configFile
 	if logLevel == "" {
 		logLevel = "INFO"
 	}
-	l.process, err = os.StartProcess(cerbos, []string{"cerbos", "server", "--config", configFile, "--log-level", logLevel}, &os.ProcAttr{
+	argv := []string{"cerbos", "server", "--config=" + configFile, "--log-level=" + logLevel, "--set=server.httpListenAddr=" + httpListenAddr, "--set=server.grpcListenAddr=" + grpcListenAddr}
+	l.process, err = os.StartProcess(cerbos, argv, &os.ProcAttr{
 		Dir:   workDir,
 		Files: []*os.File{os.Stdin, os.Stdout, os.Stderr},
 	})

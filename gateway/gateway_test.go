@@ -33,7 +33,7 @@ func (testProcessManager) Started() bool { return true }
 
 func (testProcessManager) StopProcess() error { return nil }
 
-const localCerbosURL = "http://127.0.0.1:3592"
+const localCerbosURL = "http://127.0.0.1" + httpListenAddr
 
 var remoteCerbosURL = os.Getenv("REMOTE_CERBOS_URL")
 
