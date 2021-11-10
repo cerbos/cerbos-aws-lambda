@@ -23,7 +23,7 @@ Resources:
       Architectures:
         - { Ref: ArchitectureParameter }
       PackageType: Image
-      ImageUri: <repositoryUri>:latest
+      ImageUri: <repositoryUri>
       MemorySize: 256
       Events:
         CatchAll:
