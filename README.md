@@ -44,7 +44,7 @@ make publish-image
 ```
 
 ### Create AWS Lambda function
-You can create an AWS Lambda function referencing the published image with any tool. Alternatively, you can use the provided template `sam.yml`. For the latter option, please replace <repositoryUri> with the value you saved in the previous step. The template exposes these environment variables.
+You can create an AWS Lambda function referencing the published image with any tool. Alternatively, you can use the provided template `sam.yml`. For the latter option, please replace `<repositoryUri>` with the value you saved in the previous step. The template exposes these environment variables.
 - BUCKET_URL - the URL of the S3 bucket where Cerbos policies are stored.
 - BUCKET_PREFIX - optional prefix for the S3 bucket.
 - CERBOS_LOGGING_LEVEL - Cerbos logging level. It defaults to INFO.
