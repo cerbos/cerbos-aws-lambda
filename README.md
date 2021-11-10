@@ -13,7 +13,7 @@ The following tools are required:
 - AWS SAM CLI - if you wish to use the provided AWS Lambda function template.
 - Docker
 
-### Build the docker image
+### Build the Docker image
 
 Check out `conf.default.yml` for Cerbos configuration. The default configuration uses blob storage, e.g. AWS S3 bucket. Cerbos config can read from environment variables. If you choose to do so, your AWS Lambda have to expose them.
 
@@ -22,16 +22,16 @@ Run the following command to build the docker image 'cerbos/aws-lambda-gateway':
 make image
 ```
 
-### Publish the docker image
+### Publish the Docker image
 
-In order to publish the image you will need to have a AWS ECR repository. You can create one in the AWS console or using AWS CLI with the following command (replace `<repository-name>` with the name of your repository):
+To publish the image, you will need to have an AWS ECR repository. You can create one in the AWS console or using AWS CLI with the following command (replace `<repository-name>` with the name of your repository):
 
 You will see `repositoryUri` in the output of the command. Save it for later use.
 ```shell
 aws ecr create-repository --repository-name <repository-name> --image-scanning-configuration scanOnPush=true
 ```
 
-Then you will need to get authentication token for the repository. You can do it with the following command:
+Then you will need to get an authentication token for the repository. You can do it with the following command:
 
 ```shell
 export ECR_REPOSITORY_URL=<repositoryUri>
@@ -44,14 +44,14 @@ make publish-image
 ```
 
 ### Create AWS Lambda function
-You can create AWS Lambda function referencing the published image with any tool. Alternatively you can use the provided template `sam.yml`. For latter option please replace <repositoryUri> with the value you saved in the previous step. The template exposes these environment variables.
+You can create an AWS Lambda function referencing the published image with any tool. Alternatively, you can use the provided template `sam.yml`. For the latter option, please replace <repositoryUri> with the value you saved in the previous step. The template exposes these environment variables.
 - BUCKET_URL - the URL of the S3 bucket where Cerbos policies are stored.
 - BUCKET_PREFIX - optional prefix for the S3 bucket.
-- CERBOS_LOGGING_LEVEL - Cerbos logging level, defaults to INFO.
+- CERBOS_LOGGING_LEVEL - Cerbos logging level. It defaults to INFO.
 
-To publish the function run the following command:
+To publish the function, run the following command:
 ```shell
 make publish-lambda
 ```
 
-The command will create an AWS Lambda function as part of the stack called `$CERBOS_STACK_NAME` (if unsetted, defaults to `Cerbos`). The stack will also create an API Gateway resources and IAM role for the function. Make sure the role has the necessary permissions to access the S3 bucket (or other policy storage you might use).
+The command will create an AWS Lambda function as part of the stack called `$CERBOS_STACK_NAME` (if unset, defaults to `Cerbos`). The stack will also create API Gateway resources and an IAM role for the function. Ensure the role has the necessary permissions to access the S3 bucket (or other policy storage you might use).
