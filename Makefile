@@ -26,12 +26,12 @@ cerbos-binary:
 
 .PHONY: image
 image: cerbos-binary
-	@ arch=$$(uname -m); [ "$$arch" != "x86_64" ] && [ "$$arch" != "arm64" ] && { echo "$${arch} - unsupported architecture, supported: x86_64, arm64"; exit 1; }; \
+	@ arch=$$(uname -m); [ "$$arch" != "x86_64" ] && [ "$$arch" != "arm64" ] && { echo "$${arch} - unsupported architecture, supported: x86_64, arm64" >&2; exit 1; }; \
 	docker build --build-arg ARCH=$$arch -t cerbos/aws-lambda-gateway .
 
 .PHONY: ecr
 ecr:
-	@ [ -n "$$ECR_REPOSITORY_URL" ] || { echo "Please set ECR_REPOSITORY_URL environment variable"; exit 1; }
+	@ [ -n "$$ECR_REPOSITORY_URL" ] || { echo "Please set ECR_REPOSITORY_URL environment variable" >&2; exit 1; }
 
 .PHONY: publish-image
 publish-image: image ecr
@@ -40,7 +40,7 @@ publish-image: image ecr
 
 .PHONY: publish-lambda
 publish-lambda: ecr
-	@ arch=$$(uname -m); [ "$$arch" != "x86_64" ] && [ "$$arch" != "arm64" ] && { echo "$${arch} - unsupported architecture, supported: x86_64, arm64"; exit 1; }; \
+	@ arch=$$(uname -m); [ "$$arch" != "x86_64" ] && [ "$$arch" != "arm64" ] && { echo "$${arch} - unsupported architecture, supported: x86_64, arm64" >&2; exit 1; }; \
 	sam deploy --template sam.yml --stack-name $${CERBOS_STACK_NAME:-Cerbos} --resolve-image-repos \
 	 --capabilities CAPABILITY_IAM --no-confirm-changeset  --no-fail-on-empty-changeset --parameter-overrides ArchitectureParameter=$$arch
 
