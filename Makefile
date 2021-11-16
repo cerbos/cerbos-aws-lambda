@@ -1,3 +1,5 @@
+SHELL:=/bin/bash
+
 .PHONY: all
 all: clean build
 
@@ -10,8 +12,18 @@ clean:
 
 .PHONY: cerbos-binary
 cerbos-binary:
-	@ CURRENT_RELEASE=$${CERBOS_RELEASE:-$$(curl -sH "Accept: application/vnd.github.v3+json"  https://api.github.com/repos/cerbos/cerbos/tags | grep -o -E '"name": "v\d+\.\d+.\d+"' | cut -f 2 -d ':' | tr -d ' "v' | head -1)}; \
- 	CURRENT_RELEASE=$${CURRENT_RELEASE#v}; \
+	@ if [[ "$$CERBOS_RELEASE" ]]; then \
+		CURRENT_RELEASE=$$CERBOS_RELEASE; \
+	else \
+		CURRENT_RELEASE=$$(curl -sH "Accept: application/vnd.github.v3+json"  https://api.github.com/repos/cerbos/cerbos/tags | grep -o -E '"name": "v\d+\.\d+.\d+"' | head -1); \
+	fi; \
+	ver='[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+'; \
+	if [[ $$CURRENT_RELEASE =~ $$ver  ]]; then \
+		CURRENT_RELEASE="$${BASH_REMATCH[0]}"; \
+	else \
+		echo "Unexpected format of CERBOS_RELEASE, expected semantic version 'x.x.x'" >&2; \
+		exit 1; \
+	fi; \
 	for os in Linux Darwin; do \
    		for arch in arm64 amd64; do \
    			a=$$arch; \
