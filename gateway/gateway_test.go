@@ -116,9 +116,13 @@ func pathToCerbos(t *testing.T) string {
 	if goARCH == "" {
 		goARCH = runtime.GOARCH
 	}
+	arch := goARCH
+	if arch == "amd64" {
+		arch = "x86_64"
+	}
 	path := filepath.Join(test.PathToDir(t, ""),
 		"../../.cerbos",
-		fmt.Sprintf("%s_%s", strings.Title(goOS), goARCH),
+		fmt.Sprintf("%s_%s", strings.Title(goOS), arch),
 		"cerbos")
 
 	stat, err := os.Stat(path)

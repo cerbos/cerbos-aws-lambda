@@ -24,16 +24,16 @@ cerbos-binary:
 		echo "Unexpected format of CERBOS_RELEASE, expected semantic version 'x.x.x'" >&2; \
 		exit 1; \
 	fi; \
+	arch=$$(uname -m); [ "$$arch" != "x86_64" ] && [ "$$arch" != "arm64" ] && { echo "$${arch} - unsupported architecture, supported: x86_64, arm64" >&2; exit 1; }; \
+	echo "Downloading Cerbos binaries if necessary"; \
 	for os in Linux Darwin; do \
-   		for arch in arm64 amd64; do \
-   			a=$$arch; \
-   			if [ "$$a" = "amd64" ]; then \
-   				a=x86_64; \
-   			fi; \
-   			p=$${os}_$${arch}; \
-			mkdir -p ./.cerbos/$${p}; \
-			[ -e "./.cerbos/$${p}/cerbos" ] || curl -L "https://github.com/cerbos/cerbos/releases/download/v$${CURRENT_RELEASE}/cerbos_$${CURRENT_RELEASE}_$${os}_$${a}.tar.gz" | tar -xz -C ./.cerbos/$${p}/ cerbos; \
-		done; \
+		a=$$arch; \
+		if [ "$$a" = "amd64" ]; then \
+			a=x86_64; \
+		fi; \
+		p=$${os}_$${a}; \
+		mkdir -p ./.cerbos/$${p}; \
+		[ -e "./.cerbos/$${p}/cerbos" ] || curl -sL "https://github.com/cerbos/cerbos/releases/download/v$${CURRENT_RELEASE}/cerbos_$${CURRENT_RELEASE}_$${os}_$${a}.tar.gz" | tar -xz -C ./.cerbos/$${p}/ cerbos; \
     done; \
 
 .PHONY: image
