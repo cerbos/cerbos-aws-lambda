@@ -89,21 +89,42 @@ func TestGateway_Invoke(t *testing.T) {
 				request, response string
 			}{request: string(input), response: response.Body})
 			if resources.WantResponse != nil {
-				body := make(map[string]interface{})
-				err = json.Unmarshal([]byte(response.Body), &body)
+				body := readBody(t, response.Body, batch)
 				is.NoError(err)
-				diff := cmp.Diff(resources.WantResponse, body, cmpopts.EquateEmpty(), cmpopts.SortSlices(func(a, b interface{}) bool {
-					if a, ok := a.(string); ok {
-						if b, ok := b.(string); ok {
-							return a < b
+				diff := cmp.Diff(resources.WantResponse, body,
+					cmpopts.EquateEmpty(), cmpopts.SortSlices(func(a, b interface{}) bool {
+						if a, ok := a.(string); ok {
+							if b, ok := b.(string); ok {
+								return a < b
+							}
 						}
-					}
-					return false
-				}))
+						return false
+					}))
 				is.Empty(diff, "mismatch: -want +got")
 			}
 		})
 	}
+}
+
+func readBody(t *testing.T, body string, batch bool) (res map[string]interface{}) {
+	var v interface{}
+	var err error
+	if batch {
+		var output CheckResourceBatchResponse
+		err = json.Unmarshal([]byte(body), &output)
+		v = output
+	} else {
+		var output CheckResourceSetResponse
+		err = json.Unmarshal([]byte(body), &output)
+		v = output
+	}
+	require.NoError(t, err)
+	b, err := json.Marshal(v)
+	require.NoError(t, err)
+	body = string(b)
+	err = json.Unmarshal([]byte(body), &res)
+	require.NoError(t, err)
+	return
 }
 
 func pathToCerbos(t *testing.T) string {
@@ -195,4 +216,31 @@ type checkResources struct {
 		Input        map[string]interface{} `json:"input"`
 		WantResponse map[string]interface{} `json:"wantResponse"`
 	} `json:"checkResourceBatch"`
+}
+type CheckResourceSetResponse struct {
+	RequestId         string                                               `json:"requestId"`
+	ResourceInstances map[string]*CheckResourceSetResponse_ActionEffectMap `json:"resourceInstances"`
+	Meta              *CheckResourceSetResponse_Meta                       `json:"meta"`
+}
+type CheckResourceSetResponse_ActionEffectMap struct {
+	Actions map[string]string `json:"actions"`
+}
+type CheckResourceSetResponse_Meta struct {
+	ResourceInstances map[string]*CheckResourceSetResponse_Meta_ActionMeta `json:"resourceInstances"`
+}
+type CheckResourceSetResponse_Meta_ActionMeta struct {
+	Actions               map[string]*CheckResourceSetResponse_Meta_EffectMeta `json:"actions"`
+	EffectiveDerivedRoles []string                                             `json:"effectiveDerivedRoles"`
+}
+type CheckResourceSetResponse_Meta_EffectMeta struct {
+	MatchedPolicy string `json:"matchedPolicy"`
+}
+type CheckResourceBatchResponse struct {
+	RequestId string                                        `json:"requestId"`
+	Results   []*CheckResourceBatchResponse_ActionEffectMap `json:"results"`
+}
+
+type CheckResourceBatchResponse_ActionEffectMap struct {
+	ResourceId string            `json:"resourceId"`
+	Actions    map[string]string `json:"actions"`
 }
