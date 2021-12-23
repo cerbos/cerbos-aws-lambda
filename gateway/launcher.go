@@ -13,9 +13,15 @@ import (
 )
 
 const (
-	healthCheckInterval = time.Millisecond * 15
-	httpListenAddr      = ":3592"
-	grpcListenAddr      = ":3593"
+	httpListenAddr = ":3592"
+	grpcListenAddr = ":3593"
+
+	cerbosLogLevelEnv            = "CERBOS_LOG_LEVEL"
+	cerbosLaunchTimeoutEnv       = "CERBOS_LAUNCH_TIMEOUT"
+	cerbosHealthCheckIntervalEnv = "CERBOS_HEALTH_CHECK_INTERVAL"
+
+	cerbosLaunchTimeoutDefault       = 2 * time.Second
+	cerbosHealthCheckIntervalDefault = 50 * time.Millisecond
 )
 
 type launcher struct {
@@ -35,10 +41,15 @@ func (l *launcher) StartProcess(ctx context.Context, cerbos, workDir, configFile
 	if l.Started() {
 		return nil
 	}
-	logLevel := os.Getenv("CERBOS_LOG_LEVEL")
+	logLevel := os.Getenv(cerbosLogLevelEnv)
 	if logLevel == "" {
 		logLevel = "INFO"
 	}
+
+	timeout := parseDurationOrDefault(os.Getenv(cerbosLaunchTimeoutEnv), cerbosLaunchTimeoutDefault)
+	log.Printf("cerbos launch timeout: %s", timeout)
+	healthCheckInterval := parseDurationOrDefault(os.Getenv(cerbosHealthCheckIntervalEnv), cerbosHealthCheckIntervalDefault)
+	log.Printf("health check interval: %s", healthCheckInterval)
 	argv := []string{"cerbos", "server", "--config=" + configFile, "--log-level=" + logLevel, "--set=server.httpListenAddr=" + httpListenAddr, "--set=server.grpcListenAddr=" + grpcListenAddr}
 	l.process, err = os.StartProcess(cerbos, argv, &os.ProcAttr{
 		Dir:   workDir,
@@ -51,15 +62,15 @@ func (l *launcher) StartProcess(ctx context.Context, cerbos, workDir, configFile
 	if err != nil {
 		return err
 	}
-	now := time.Now()
-	time.Sleep(healthCheckInterval)
-	for i := 0; i < 50; i++ {
+	startTime := time.Now()
+	for {
+		time.Sleep(healthCheckInterval)
 		resp, err := l.httpClient.Do(request)
-		log.Printf("starting cerbos health check: %v, pid: %v", err, l.process.Pid)
+		log.Printf("cerbos health check: %v, pid: %v", err, l.process.Pid)
 		if resp != nil {
 			resp.Body.Close()
 			if resp.StatusCode == http.StatusOK {
-				log.Printf("Cerbos server started in %s", time.Since(now))
+				log.Printf("Cerbos server started in %s", time.Since(startTime))
 				go func() {
 					ps, err := l.process.Wait()
 					log.Printf("Cerbos process exited: state %q, err %q", ps.String(), err)
@@ -69,10 +80,23 @@ func (l *launcher) StartProcess(ctx context.Context, cerbos, workDir, configFile
 				return nil
 			}
 		}
-		time.Sleep(healthCheckInterval)
+		if time.Since(startTime) > timeout {
+			break
+		}
 	}
 
-	return fmt.Errorf("in %v: %w", time.Since(now), ErrNotStarted)
+	return fmt.Errorf("in %v: %w", time.Since(startTime), ErrNotStarted)
+}
+
+func parseDurationOrDefault(v string, d time.Duration) time.Duration {
+	if v == "" {
+		return d
+	}
+	res, err := time.ParseDuration(v)
+	if err != nil {
+		return d
+	}
+	return res
 }
 
 func (l *launcher) Started() bool {

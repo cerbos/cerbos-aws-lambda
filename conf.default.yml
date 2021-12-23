@@ -1,8 +1,10 @@
 ---
-# TODO: remove server settings from the config file, need to be set via command line
-server:
-  httpListenAddr: ":3592"
-  grpcListenAddr: ":3593"
+# https://docs.cerbos.dev/cerbos/latest/configuration/auxdata.html
+# WARNING: Disabling JWT verification is not recommended because it makes the system
+# insecure by forcing Cerbos to evaluate policies using potentially tampered data.
+auxData:
+  jwt:
+    disableVerification: true
 
 storage:
   driver: "blob"

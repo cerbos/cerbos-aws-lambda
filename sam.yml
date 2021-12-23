@@ -24,7 +24,7 @@ Resources:
         - { Ref: ArchitectureParameter }
       PackageType: Image
       ImageUri: <repositoryUri>:latest
-      MemorySize: 256
+      MemorySize: 1024
       Events:
         CatchAll:
           Type: HttpApi # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api

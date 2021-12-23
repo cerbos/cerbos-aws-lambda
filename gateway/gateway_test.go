@@ -107,6 +107,8 @@ func TestGateway_Invoke(t *testing.T) {
 }
 
 func readBody(t *testing.T, body string, batch bool) (res map[string]interface{}) {
+	t.Helper()
+
 	var v interface{}
 	var err error
 	if batch {
@@ -217,30 +219,36 @@ type checkResources struct {
 		WantResponse map[string]interface{} `json:"wantResponse"`
 	} `json:"checkResourceBatch"`
 }
+
 type CheckResourceSetResponse struct {
-	RequestId         string                                               `json:"requestId"`
-	ResourceInstances map[string]*CheckResourceSetResponse_ActionEffectMap `json:"resourceInstances"`
-	Meta              *CheckResourceSetResponse_Meta                       `json:"meta"`
-}
-type CheckResourceSetResponse_ActionEffectMap struct {
-	Actions map[string]string `json:"actions"`
-}
-type CheckResourceSetResponse_Meta struct {
-	ResourceInstances map[string]*CheckResourceSetResponse_Meta_ActionMeta `json:"resourceInstances"`
-}
-type CheckResourceSetResponse_Meta_ActionMeta struct {
-	Actions               map[string]*CheckResourceSetResponse_Meta_EffectMeta `json:"actions"`
-	EffectiveDerivedRoles []string                                             `json:"effectiveDerivedRoles"`
-}
-type CheckResourceSetResponse_Meta_EffectMeta struct {
-	MatchedPolicy string `json:"matchedPolicy"`
-}
-type CheckResourceBatchResponse struct {
-	RequestId string                                        `json:"requestId"`
-	Results   []*CheckResourceBatchResponse_ActionEffectMap `json:"results"`
+	RequestID         string                                              `json:"requestId"` //nolint:tagliatelle
+	ResourceInstances map[string]*CheckResourceSetResponseActionEffectMap `json:"resourceInstances"`
+	Meta              *CheckResourceSetResponseMeta                       `json:"meta"`
 }
 
-type CheckResourceBatchResponse_ActionEffectMap struct {
-	ResourceId string            `json:"resourceId"`
+type CheckResourceSetResponseActionEffectMap struct {
+	Actions map[string]string `json:"actions"`
+}
+
+type CheckResourceSetResponseMeta struct {
+	ResourceInstances map[string]*CheckResourceSetResponseMetaActionMeta `json:"resourceInstances"`
+}
+
+type CheckResourceSetResponseMetaActionMeta struct {
+	Actions               map[string]*CheckResourceSetResponseMetaEffectMeta `json:"actions"`
+	EffectiveDerivedRoles []string                                           `json:"effectiveDerivedRoles"`
+}
+
+type CheckResourceSetResponseMetaEffectMeta struct {
+	MatchedPolicy string `json:"matchedPolicy"`
+}
+
+type CheckResourceBatchResponse struct {
+	RequestID string                                       `json:"requestId"` //nolint:tagliatelle
+	Results   []*CheckResourceBatchResponseActionEffectMap `json:"results"`
+}
+
+type CheckResourceBatchResponseActionEffectMap struct {
+	ResourceID string            `json:"resourceId"` //nolint:tagliatelle
 	Actions    map[string]string `json:"actions"`
 }
