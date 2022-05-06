@@ -26,7 +26,7 @@ The following tools are required:
 
 ### Build the Docker image
 
-Check out `conf.default.yml` for Cerbos configuration. The default configuration uses blob storage, e.g. AWS S3 bucket. Cerbos config can read from environment variables. If you choose to do so, your AWS Lambda has to expose them.
+Check out `conf.default.yml` for Cerbos configuration. The default configuration uses blob storage, e.g. AWS S3 bucket. Cerbos config can read from environment variables. If you choose to do so, your AWS Lambda has to expose them. 
 
 By default, the latest release of Cerbos is used. If you want to use a particular Cerbos version, you can specify it in `CERBOS_RELEASE` environment variable.
 
@@ -34,6 +34,8 @@ Run the following command to build the docker image 'cerbos/aws-lambda-gateway':
 ```shell
 make image
 ```
+
+Note that the image will be built in whatever architecture you are running on (x86 or arm64) - the AWS region you use must support the architecture you are deploying too also else you will get an exec format error when it tries to start up the lambda.
 
 ### Publish the Docker image
 
@@ -62,9 +64,20 @@ You can create an AWS Lambda function referencing the published image with any t
 - BUCKET_PREFIX - optional prefix for the S3 bucket.
 - CERBOS_LOGGING_LEVEL - Cerbos logging level. It defaults to INFO.
 
+You will need to grant the role access to the S3 bucket you are storing policies in.
+
 To publish the function, run the following command:
 ```shell
 make publish-lambda
 ```
 
 The command will create an AWS Lambda function as part of the stack called as per `CERBOS_STACK_NAME` environment variable (if unset, defaults to `Cerbos`). The stack will also create API Gateway resources and an IAM role for the function. **Ensure the role has the necessary permissions to access the S3 bucket (or other policy storage you might use)**.
+
+Should you change the configuration and rebuild the image, you can update the Lambda via:
+
+```shell
+make clean
+make image
+make publish-image
+make update-lambda
+```
