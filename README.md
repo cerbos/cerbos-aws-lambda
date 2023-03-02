@@ -23,10 +23,12 @@ The following tools are required:
 - AWS CLI
 - AWS SAM CLI - if you wish to use the provided AWS Lambda function template
 - Docker
+- jq - If you want the Makefile to automatically detect the version of Cerbos. Otherwise use the `CERBOS_RELEASE` environment variable to specify the Cerbos version to use.
+
 
 ### Build the Docker image
 
-Check out `conf.default.yml` for Cerbos configuration. The default configuration uses blob storage, e.g. AWS S3 bucket. Cerbos config can read from environment variables. If you choose to do so, your AWS Lambda has to expose them. 
+Check out `conf.default.yml` for Cerbos configuration. The default configuration uses blob storage, e.g. AWS S3 bucket. Cerbos config can read from environment variables. If you choose to do so, your AWS Lambda has to expose them.
 
 By default, the latest release of Cerbos is used. If you want to use a particular Cerbos version, you can specify it in `CERBOS_RELEASE` environment variable.
 
