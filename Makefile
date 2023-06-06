@@ -24,7 +24,7 @@ cerbos-binary:
 		echo "Unexpected format of CERBOS_RELEASE ($$CURRENT_RELEASE), expected semantic version 'x.x.x'" >&2; \
 		exit 1; \
 	fi; \
-	echo "Using Cerbos $$CURRENT_RELEASE"
+	echo "Using Cerbos $$CURRENT_RELEASE"; \
 	arch=$$(uname -m); [ "$$arch" != "x86_64" ] && [ "$$arch" != "arm64" ] && { echo "$${arch} - unsupported architecture, supported: x86_64, arm64" >&2; exit 1; }; \
 	oses=(Linux); \
 	if [[ $$(uname -s) = Darwin ]]; then \
