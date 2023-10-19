@@ -45,7 +45,7 @@ checkResourceSet:
       "XX125": {
         "actions": {
           "view:public": "EFFECT_DENY",
-        },
+        }
       }
     },
     "meta": {
@@ -56,7 +56,7 @@ checkResourceSet:
               "matchedPolicy": "principal.donald_duck.v20210210"
             }
           },
-          "effectiveDerivedRoles": [ ],
+          "effectiveDerivedRoles": null
         }
       }
     }
