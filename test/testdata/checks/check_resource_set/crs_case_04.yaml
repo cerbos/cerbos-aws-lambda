@@ -78,7 +78,7 @@ checkResourceSet:
               "matchedPolicy": "principal.donald_duck.v20210210"
             }
           },
-          "effectiveDerivedRoles": [],
+          "effectiveDerivedRoles": null
         },
         "XX150": {
           "actions": {
