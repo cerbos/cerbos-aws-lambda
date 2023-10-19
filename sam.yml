@@ -23,7 +23,7 @@ Resources:
       Architectures:
         - { Ref: ArchitectureParameter }
       PackageType: Image
-      ImageUri: <repositoryUri>:latest
+      ImageUri: 414605243264.dkr.ecr.us-east-2.amazonaws.com/lambda:latest
       MemorySize: 1024
       Events:
         CatchAll:

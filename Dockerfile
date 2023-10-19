@@ -7,7 +7,7 @@ COPY go.mod go.sum main.go ./
 
 
 RUN go get -d -v ./...
-RUN go build -ldflags '-s -w' -o /gw main.go
+RUN CGO_ENABLED=0 go build -ldflags '-s -w' -o /gw main.go
 RUN chmod +x /gw
 
 # Now copy it into our base image.
