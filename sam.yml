@@ -36,6 +36,7 @@ Resources:
           BUCKET_URL: ""
           BUCKET_PREFIX: ""
           CERBOS_LOG_LEVEL: INFO
+          XDG_CACHE_HOME: /tmp
 
 Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
